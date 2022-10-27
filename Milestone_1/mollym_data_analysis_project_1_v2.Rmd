@@ -1,0 +1,535 @@
+---
+title: "Mini Data-Analysis Deliverable 1"
+output: github_document
+
+---
+
+# Welcome to your (maybe) first-ever data analysis project!
+
+And hopefully the first of many. Let's get started:
+
+1.  Install the [`datateachr`](https://github.com/UBC-MDS/datateachr) package by typing the following into your **R terminal**:
+
+<!-- -->
+
+    install.packages("devtools")
+    devtools::install_github("UBC-MDS/datateachr")
+
+2.  Load the packages below.
+
+```{r}
+suppressPackageStartupMessages(library(datateachr))
+suppressWarnings(suppressPackageStartupMessages(library(tidyverse)))
+```
+
+3.  Make a repository in the <https://github.com/stat545ubc-2022> Organization. You will be working with this repository for the entire data analysis project. You can either make it public, or make it private and add the TA's and Lucy as collaborators. A link to help you create a private repository is available on the #collaborative-project Slack channel. 
+
+# Instructions
+
+## For Both Milestones
+
+-   Each milestone is worth 45 points. The number of points allocated to each task will be annotated within each deliverable. Tasks that are more challenging will often be allocated more points.
+
+-   10 points will be allocated to the reproducibility, cleanliness, and coherence of the overall analysis. While the two milestones will be submitted as independent deliverables, the analysis itself is a continuum - think of it as two chapters to a story. Each chapter, or in this case, portion of your analysis, should be easily followed through by someone unfamiliar with the content. [Here](https://swcarpentry.github.io/r-novice-inflammation/06-best-practices-R/) is a good resource for what constitutes "good code". Learning good coding practices early in your career will save you hassle later on!
+
+## For Milestone 1
+
+**To complete this milestone**, edit [this very `.Rmd` file](https://raw.githubusercontent.com/UBC-STAT/stat545.stat.ubc.ca/master/content/mini-project/mini-project-1.Rmd) directly. Fill in the sections that are tagged with `<!--- start your work below --->`.
+
+**To submit this milestone**, make sure to knit this `.Rmd` file to an `.md` file by changing the YAML output settings from `output: html_document` to `output: github_document`. Commit and push all of your work to the mini-analysis GitHub repository you made earlier, and tag a release on GitHub. Then, submit a link to your tagged release on canvas.
+
+**Points**: This milestone is worth 45 points: 43 for your analysis, 1 point for having your Milestone 1 document knit error-free, and 1 point for tagging your release on Github.
+
+# Learning Objectives
+
+By the end of this milestone, you should:
+
+-   Become familiar with your dataset of choosing
+-   Select 4 questions that you would like to answer with your data
+-   Generate a reproducible and clear report using R Markdown
+-   Become familiar with manipulating and summarizing your data in tibbles using `dplyr`, with a research question in mind.
+
+# Task 1: Choose your favorite dataset (10 points)
+
+The `datateachr` package by Hayley Boyce and Jordan Bourak currently composed of 7 semi-tidy datasets for educational purposes. Here is a brief description of each dataset:
+
+-   *apt_buildings*: Acquired courtesy of The City of Toronto's Open Data Portal. It currently has 3455 rows and 37 columns.
+
+-   *building_permits*: Acquired courtesy of The City of Vancouver's Open Data Portal. It currently has 20680 rows and 14 columns.
+
+-   *cancer_sample*: Acquired courtesy of UCI Machine Learning Repository. It currently has 569 rows and 32 columns.
+
+-   *flow_sample*: Acquired courtesy of The Government of Canada's Historical Hydrometric Database. It currently has 218 rows and 7 columns.
+
+-   *parking_meters*: Acquired courtesy of The City of Vancouver's Open Data Portal. It currently has 10032 rows and 22 columns.
+
+-   *steam_games*: Acquired courtesy of Kaggle. It currently has 40833 rows and 21 columns.
+
+-   *vancouver_trees*: Acquired courtesy of The City of Vancouver's Open Data Portal. It currently has 146611 rows and 20 columns.
+
+**Things to keep in mind**
+
+-   We hope that this project will serve as practice for carrying our your own *independent* data analysis. Remember to comment your code, be explicit about what you are doing, and write notes in this markdown document when you feel that context is required. As you advance in the project, prompts and hints to do this will be diminished - it'll be up to you!
+
+-   Before choosing a dataset, you should always keep in mind **your goal**, or in other ways, *what you wish to achieve with this data*. This mini data-analysis project focuses on *data wrangling*, *tidying*, and *visualization*. In short, it's a way for you to get your feet wet with exploring data on your own.
+
+And that is exactly the first thing that you will do!
+
+1.1 Out of the 7 datasets available in the `datateachr` package, choose **4** that appeal to you based on their description. Write your choices below:
+
+**Note**: We encourage you to use the ones in the `datateachr` package, but if you have a dataset that you'd really like to use, you can include it here. But, please check with a member of the teaching team to see whether the dataset is of appropriate complexity. Also, include a **brief** description of the dataset here to help the teaching team understand your data.
+
+<!-------------------------- Start your work below ---------------------------->
+
+  *1. cancer_sample*
+
+  *2. vancouver_trees*
+
+  *3. parking_meters*
+
+  *4. flow_sample*
+
+<!----------------------------------------------------------------------------->
+
+1.2 One way to narrowing down your selection is to *explore* the datasets. Use your knowledge of dplyr to find out at least *3* attributes about each of these datasets (an attribute is something such as number of rows, variables, class type...). The goal here is to have an idea of *what the data looks like*.
+
+*Hint:* This is one of those times when you should think about the cleanliness of your analysis. I added a single code chunk for you below, but do you want to use more than one? Would you like to write more comments outside of the code chunk?
+
+<!-------------------------- Start your work below ---------------------------->
+#### Notes on codes I used 
+glimpse() was used to understand the rows, columns, categories of data, and get an idea of what the data looks like. 
+summary() was used to get a mathematical sense of the data - how large are the ranges, what are the means/medians, etc. 
+colSums(is.na()) is used to understand now many NAs there are. 
+
+#### Cancer Sample
+```{r}
+glimpse(cancer_sample)
+summary(cancer_sample)
+colSums(is.na(cancer_sample))
+```
+* There are 569 rows and 32 columns. Most of the columns are numeric; it looks like they are continuous (not categorical numbers). Some of the values have a really large spread. There are no NA values. I'm not super familiar with the information in the graph - what does "compactness_worst" mean, for example? 
+
+#### Vancouver trees 
+```{r}
+glimpse(vancouver_trees)
+summary(vancouver_trees)
+colSums(is.na(vancouver_trees))
+```
+* There are 146,611 rows and 20 columns. Most of the values are characters, and a few are dichotomous or categorical (height_range seems to have heights as numeric categories, and while civic_number is numeric it's not like a measurement of something). There is also a date category. As a result there's not much to learn from the summary() function, except that there are a lot of NA values in some of the columns (cultivar, date, plant area, longitude, and latitude). I can more or less figure out what is going on with this data based on the column names, and I found more information online from the City of Vancouver about what the different values mean. 
+
+#### Parking Meters
+```{r}
+glimpse(parking_meters)
+summary(parking_meters)
+colSums(is.na(parking_meters))
+```
+* There are 10,032 rows and 22 columns. Most of the columns are considered "character" though some could probably be changed to numeric since there is a lot that have to do with time and money. There are some dichotomous variables. The data is stored in this sheet really weird because of that, and data analysis will be hard without doing a lot of cleaning. There are a handful of NAs in most of the data columns, but a lot of in the "rate_misc" and "time_misc". I can more or less figure out what is going on with the data by looking at the column names. 
+
+#### Flow Sample 
+```{r}
+glimpse(flow_sample)
+summary(flow_sample)
+colSums(is.na(flow_sample))
+```
+* There are 218 rows and 7 columns. The year is not stored as a date column. Most of the columns are numeric, although the month-date-year are separate and not considered dates which may make data analysis hard. "Flow" seems to be the only continuous numeric/measurements column. As a result there's not much to be learned from the summary() function. There's not many NA's except in the "sym" column. I think if I knew more about this data I could figure out what the columns mean pretty easy since there's so few of them, but I'm not sure what "sym" and "extreme_type" means and what "flow" really means. 
+
+<!----------------------------------------------------------------------------->
+
+1.3 Now that you've explored the 4 datasets that you were initially most interested in, let's narrow it down to 2. What lead you to choose these 2? Briefly explain your choices below, and feel free to include any code in your explanation.
+
+<!-------------------------- Start your work below ---------------------------->
+* I am going to be working with vancouver_trees and parking_meters because I can pretty easily understand the data based on the headers, and because  they have a varitety of different column types. I also love trees and regularly use parking meters so I feel more "connected" to the data.  
+<!----------------------------------------------------------------------------->
+
+1.4 Time for the final decision! Going back to the beginning, it's important to have an *end goal* in mind. For example, if I had chosen the `titanic` dataset for my project, I might've wanted to explore the relationship between survival and other variables. Try to think of 1 research question that you would want to answer with each dataset. Note them down below, and make your final choice based on what seems more interesting to you!
+
+<!-------------------------- Start your work below ---------------------------->
+* For the parking meter data: what days/times make the most money for the city? 
+
+* For the trees dataset: how are the different tree species distributed accross the neighborhoods? 
+
+* I'm going to look into the tree species! 
+<!----------------------------------------------------------------------------->
+
+# Important note
+
+Read Tasks 2 and 3 *fully* before starting to complete either of them. Probably also a good point to grab a coffee to get ready for the fun part!
+
+This project is semi-guided, but meant to be *independent*. For this reason, you will complete tasks 2 and 3 below (under the **START HERE** mark) as if you were writing your own exploratory data analysis report, and this guidance never existed! Feel free to add a brief introduction section to your project, format the document with markdown syntax as you deem appropriate, and structure the analysis as you deem appropriate. Remember, marks will be awarded for completion of the 4 tasks, but 10 points of the whole project are allocated to a reproducible and clean analysis. If you feel lost, you can find a sample data analysis [here](https://www.kaggle.com/headsortails/tidy-titarnic) to have a better idea. However, bear in mind that it is **just an example** and you will not be required to have that level of complexity in your project.
+
+# Task 2: Exploring your dataset (15 points)
+
+If we rewind and go back to the learning objectives, you'll see that by the end of this deliverable, you should have formulated *4* research questions about your data that you may want to answer during your project. However, it may be handy to do some more exploration on your dataset of choice before creating these questions - by looking at the data, you may get more ideas. **Before you start this task, read all instructions carefully until you reach START HERE under Task 3**.
+
+2.1 Complete *4 out of the following 8 exercises* to dive deeper into your data. All datasets are different and therefore, not all of these tasks may make sense for your data - which is why you should only answer *4*. Use *dplyr* and *ggplot*.
+
+1.  Plot the distribution of a numeric variable.
+2.  Create a new variable based on other variables in your data (only if it makes sense)
+3.  Investigate how many missing values there are per variable. Can you find a way to plot this?
+4.  Explore the relationship between 2 variables in a plot.
+5.  Filter observations in your data according to your own criteria. Think of what you'd like to explore - again, if this was the `titanic` dataset, I may want to narrow my search down to passengers born in a particular year...
+6.  Use a boxplot to look at the frequency of different observations within a single variable. You can do this for more than one variable if you wish!
+7.  Make a new tibble with a subset of your data, with variables and observations that you are interested in exploring.
+8.  Use a density plot to explore any of your variables (that are suitable for this type of plot).
+
+2.2 For each of the 4 exercises that you complete, provide a *brief explanation* of why you chose that exercise in relation to your data (in other words, why does it make sense to do that?), and sufficient comments for a reader to understand your reasoning and code.
+
+<!-------------------------- Start your work below ---------------------------->
+#### My Analysis Task 2 
+First, I noticed this is a HUGE data set, so lets see how many unique values there are in each category so I can get a better feel for what the data is like; if it turns out there is a huge variety of categorical variables, it might make more sense to pick specific neighborhoods, trees, people, etc. to look at so that my data doesn't get too unwieldy and so my graphs look nice. 
+I'll do this by making a new tibble that summarizes the number of unique values that are in each of our columns. 
+```{r}
+number_na <- vancouver_trees
+number_na %>%
+summarize_all(list(~n_distinct(.))) %>%
+  print.data.frame()
+```
+Looks like we have 22 neighborhoods, 294 cultivars, 283 species names, and whopping 634 "common names". That's a lot of data. 
+
+I'm not a biologist so I'm not sure if each species name is unqiue (for instance, is there one species name shared between two different genus's?) So I'm going to use the "mutate" function to make a new genus_species column and figure out how many unique values there are in that column to see the total number of species in the data using n_distinct. 
+
+```{r}
+vancouver_trees <- vancouver_trees %>% 
+  unite('genus_species', c('genus_name', 'species_name'), 
+        remove = FALSE)
+
+n_distinct(vancouver_trees$genus_species)
+```
+There's 361 unique species of trees in the data! 
+
+Maybe it makes more sense to try to limit our data on a neighborhood-by-neighborhood basis, since there's only 22 neighborhoods. Lets see how many unique species there are in each one. 
+
+```{r}
+neighborhood_data <- vancouver_trees %>% 
+  group_by(neighbourhood_name) %>%
+  summarize(n_distinct(genus_species)) %>% 
+  print.data.frame()
+```
+Interesting! Looks like downtown has the fewest species, Kits and Renfrew-collingwood have the most, but overall the data seems surprisngly even.
+
+This is still a lot of data to work with, and I'm interested in some individual tree information. My favorite tree is the japanese maple - Acer palmatum. So lets use that when trying to figure out stuff about trees. 
+
+Let's pull these out and see how big their trunks are using a density plot of the diameter. I know that they're the only tree in this data set with the species name "Palmatum" so I can just use that instead of typing extra to pull out from the genus_species name. 
+
+```{r}
+japanese_maple <- vancouver_trees %>%
+  filter(species_name == "PALMATUM") 
+  
+japanese_maple %>% 
+ggplot(aes(diameter)) + 
+geom_density()
+```
+
+Where are the widest ones? We'll do a boxplot of the neighborhoods and diameter to see. 
+
+```{r}
+  japanese_maple %>%
+  ggplot(aes(neighbourhood_name, diameter)) + 
+  geom_boxplot() + 
+    coord_flip()
+```
+
+The west end seems to have the widest maples in general, but there is a very big one in kits! 
+
+what about the tallest? (the box plot isn't perfect for this since it's a height category that corresponds to the height instead of a continuous height, but this should be good enough to give us an idea)
+
+```{r}
+      japanese_maple %>%
+  ggplot(aes(neighbourhood_name, height_range_id)) + 
+  geom_boxplot() + 
+    coord_flip()
+```
+
+Generally kerrisdale, but there is also a very tall one in Shaughnessy. How interesting that the tallest doesn't seem to be the widest. 
+
+How tall do they tend to be? We can use a histogram to figure that out. 
+```{r}
+japanese_maple %>% 
+ggplot(aes(height_range_id)) + 
+geom_histogram()
+```
+
+I know the values are 0-10 for every 10 feet, and 1 = 10-20 feet, etc. So looks like most are around 10-20 feet. 
+
+<!----------------------------------------------------------------------------->
+
+# Task 3: Write your research questions (5 points)
+
+So far, you have chosen a dataset and gotten familiar with it through exploring the data. Now it's time to figure out 4 research questions that you would like to answer with your data! Write the 4 questions and any additional comments at the end of this deliverable. These questions are not necessarily set in stone - TAs will review them and give you feedback; therefore, you may choose to pursue them as they are for the rest of the project, or make modifications!
+
+<!--- *****START HERE***** --->
+1. Is there a relationship between species diversity and number of trees in each neighborhood? 
+2. is there a relationship between the presence of a root barrier and the diameter of the tree?  
+3. What was the proportion of Japanese Maple trees compared to all trees planted that year? 
+4. What exactly is the relationship between height and diameter of a japanese maple? 
+<!----------------------------------------------------------------------------->
+
+# Task 4: Process and summarize your data (13 points)
+
+From Task 2, you should have an idea of the basic structure of your dataset (e.g. number of rows and columns, class types, etc.). Here, we will start investigating your data more in-depth using various data  manipulation functions.
+
+### 1.1 (10 points)
+
+Now, for each of your four research questions, choose one task from options 1-4 (summarizing), and one other task from 4-8 (graphing). You should have 2 tasks done for each research question (8 total). Make sure it makes sense to do them! (e.g. don't use a numerical variables for a task that needs a categorical variable.). Comment on why each task helps (or doesn't!) answer the corresponding research question.
+
+Ensure that the output of each operation is printed!
+
+**Summarizing:**
+
+1.  Compute the *range*, *mean*, and *two other summary statistics* of **one numerical variable** across the groups of **one categorical variable** from your data.
+2.  Compute the number of observations for at least one of your categorical variables. Do not use the function `table()`!
+3.  Create a categorical variable with 3 or more groups from an existing numerical variable. You can use this new variable in the other tasks! *An example: age in years into "child, teen, adult, senior".*
+4.  Based on two categorical variables, calculate two summary statistics of your choosing.
+
+**Graphing:**
+
+5.  Create a graph out of summarized variables that has at least two geom layers.
+6.  Create a graph of your choosing, make one of the axes logarithmic, and format the axes labels so that they are "pretty" or easier to read.
+7.  Make a graph where it makes sense to customize the alpha transparency.
+8.  Create 3 histograms out of summarized variables, with each histogram having different sized bins. Pick the "best" one and explain why it is the best.
+
+Make sure it's clear what research question you are doing each operation for!
+
+<!------------------------- Start your work below ----------------------------->
+#### My Analysis Task 4
+
+**1. Is there a relationship between species diversity and number of trees in each neighborhood?** 
+
+We already have a small data frame for the number of distinct species in each neighborhood (neighborhood_data), so lets make a new one that shows the number of trees in each neighborhood, combine it with our neighborhood_data, then delete the extraneous data frame to keep things tidy.
+
+```{r}
+number_trees <- vancouver_trees %>% 
+  group_by(neighbourhood_name) %>%
+  summarize(trees_count = sum(neighbourhood_name !="X")) 
+
+neighborhood_data <- neighborhood_data %>%
+  add_column(tree_count = number_trees$trees_count) %>%
+print()
+
+rm(number_trees)
+```
+
+Let's make some histograms and see what bin sizes make more sense. 
+
+First for the tree count: 
+```{r}
+ggplot(neighborhood_data, aes(tree_count)) + 
+geom_histogram(bins = 5)
+
+ggplot(neighborhood_data, aes(tree_count)) + 
+geom_histogram(bins = 10)
+
+ggplot(neighborhood_data, aes(tree_count)) + 
+geom_histogram(bins = 20)
+```
+
+Then for the overall count: 
+```{r}
+ggplot(neighborhood_data, aes(`n_distinct(genus_species)`)) + 
+geom_histogram(bins = 5)
+
+ggplot(neighborhood_data, aes(`n_distinct(genus_species)`)) + 
+geom_histogram(bins = 10)
+
+ggplot(neighborhood_data, aes(`n_distinct(genus_species)`)) + 
+geom_histogram(bins = 20)
+```
+
+Hmm, 10 is definitely the best for the overall tree count, though its tough to say if 5 or 10 is better for the distinct tree species! 
+
+**2. is there a relationship between the presence of a root barrier and the diameter of the tree?** 
+
+First let's get some basic summary statistics for when the barrier is present vs. not present, where Y = root barrier present and N = no root barrier present. 
+
+```{r}
+#mean
+aggregate(x = vancouver_trees$diameter, 
+          by = list(vancouver_trees$root_barrier), 
+          FUN = mean)
+
+#range
+aggregate(x = vancouver_trees$diameter, 
+          by = list(vancouver_trees$root_barrier), 
+          FUN = range)
+
+#median
+aggregate(x = vancouver_trees$diameter, 
+          by = list(vancouver_trees$root_barrier), 
+          FUN = median)
+
+#IQR
+aggregate(x = vancouver_trees$diameter, 
+          by = list(vancouver_trees$root_barrier), 
+          FUN = IQR)
+
+
+```
+There's clearly a difference (it seems that the no group has a wider range and has generally wider trees) but lets also graph it. Since there are so many individual trees, we should use the logarithmic scale to see the density of the diameters, and we should also log the x axis due to the large number of data points and trees. 
+
+```{r}
+vancouver_trees %>% 
+  ggplot(aes(x = diameter, color = root_barrier)) +
+           geom_density() + 
+  scale_y_log10() + 
+  scale_x_log10()
+```
+
+It looks like theres not much of an effect on diameter of the tree until you get to around 10 inches, where theres a big effect based on presence of root barrier! 
+
+**3. What was the proportion of Japanese Maple trees compared to all trees planted that year?** 
+
+Lets get rid of the NA dates in the Japanese Maple data (since we can't make any conclusions from them), then see what the range of dates are to make date categories so we can have slightly cleaner analysis and tables (rather than having a ton of years we would just have a few year chunks). I don't want to mess with my base Japanese Maple data frame since I'll need it later, so I'll make a new one. 
+```{r}
+jm_dates <- japanese_maple %>% 
+  na.omit(date_planted)
+
+range(jm_dates$date_planted)
+
+```
+
+The trees were planted from 1995 through 2019. We can evenly divide the years into 5 groups to make our data analysis a little simpler. I'll add a column that separates the dates into the groups for both the Japanese maple data and for all trees data, then combine these into one simple tibble. 
+
+
+```{r}
+#Japanese Maple data
+jm_dates <- jm_dates %>% 
+  mutate(date_cat = case_when(
+    (date_planted >= "1995-01-01") & (date_planted <= "1999-12-31") ~ "95-99", 
+    (date_planted >= "2000-01-01") & (date_planted <= "2004-12-31") ~ "00-04",
+    (date_planted >= "2005-01-01") & (date_planted <= "2009-12-31") ~ "05-09",
+    (date_planted >= "2010-01-01=") & (date_planted <= "2014-12-31") ~ "10-14",
+    (date_planted >= "2015-01-01") & (date_planted <= "2019-12-31") ~ "15-19"
+  )) %>%
+  group_by(date_cat) %>%
+  summarize(trees_count_jm = sum(date_cat !="X")) 
+
+#all data 
+  all_dates <- vancouver_trees %>% 
+  mutate(date_cat = case_when(
+    (date_planted >= "1995-01-01") & (date_planted <= "1999-12-31") ~ "95-99", 
+    (date_planted >= "2000-01-01") & (date_planted <= "2004-12-31") ~ "00-04",
+    (date_planted >= "2005-01-01") & (date_planted <= "2009-12-31") ~ "05-09",
+    (date_planted >= "2010-01-01=") & (date_planted <= "2014-12-31") ~ "10-14",
+    (date_planted >= "2015-01-01") & (date_planted <= "2019-12-31") ~ "15-19"
+  )) %>%
+    group_by(date_cat) %>%
+  summarize(trees_count_all = sum(date_cat !="X")) %>% 
+  na.omit(date_planted) 
+  
+  #combine to one tibble and delete the extra dataframe
+  all_dates <- all_dates %>%
+  add_column(jm_count = jm_dates$trees_count_jm) %>%
+print()
+  
+  rm(jm_dates)
+```
+
+Now we need to rearrange our columns to make the data graphable 
+
+```{r}
+
+all_dates1 <- all_dates %>%
+pivot_longer(trees_count_all, names_to = "tree_cat", values_to = "all")
+
+all_dates1 <- subset(all_dates1, select = -c(jm_count)) 
+
+all_dates2 <- all_dates %>%
+pivot_longer(jm_count, names_to = "tree_cat", values_to = "all")
+all_dates2 <- subset(all_dates2, select = -c(trees_count_all))
+
+all_dates <- rbind(all_dates2, all_dates1)
+all_dates %>% 
+  rename(count = all)
+
+rm(all_dates1)
+rm(all_dates2)
+```
+
+
+Now lets graph it on a logrithmic scale 
+```{r}
+
+ggplot(data = all_dates, aes(x = date_cat, y = all, fill = tree_cat)) + 
+  geom_bar(stat = "identity", position = position_dodge()) + 
+  scale_y_log10() + 
+  ylab("count")
+
+
+```
+
+
+Looks like the number of japanese maples changes from year to year but overall trees count stays the same (though that might be difficult to deduce given the log scale)
+ 
+**4. What exactly is the relationship between height and diameter of a japanese maple?**
+
+Let's start with some summary statistics 
+```{r}
+#diameter mean 
+mean(japanese_maple$diameter)
+
+#diameter range 
+range(japanese_maple$diameter)
+
+#diameter median 
+median(japanese_maple$diameter)
+
+#diameter IQR
+IQR(japanese_maple$diameter)
+
+#height mean 
+mean(japanese_maple$height_range_id)
+
+#height range 
+range(japanese_maple$height_range_id)
+
+#height median 
+median(japanese_maple$height_range_id)
+
+#height IQR 
+IQR(japanese_maple$height_range_id)
+```
+
+Now, lets graph it! I'm going to use a jitter plot since our height ranges are more like categories, and I'm going to turn down the alpha because theres going to be a lot of overlapping data. 
+
+```{r}
+japanese_maple %>% 
+ggplot(aes(height_range_id, diameter)) + 
+geom_jitter(alpha = 0.15)
+```
+
+I'm very interested in this particularly short and fat tree, and tall and skinny one! 
+
+<!----------------------------------------------------------------------------->
+
+### 1.2 (3 points)
+
+Based on the operations that you've completed, how much closer are you to answering your research questions? Think about what aspects of your research questions remain unclear. Can your research questions be refined, now that you've investigated your data a bit more? Which research questions are yielding interesting results?
+
+<!-------------------------- Start your work below ---------------------------->
+1. Is there a relationship between species diversity and number of trees in each neighborhood?
+
+I'd need to do some more fancy graphing and run a linear regression, but based on the histograms it seems like there might be. 
+
+2. is there a relationship between the presence of a root barrier and the diameter of the tree? 
+
+This one already seems pretty answered, and the answer is yes! No root barrier = wider tree. This makes sense, since I imagine a root barrier restricts the ability of a tree to grow. If I wanted to publish the results I'd certainly still want to run some kind of correlation tests. 
+
+3. What was the proportion of Japanese Maple trees compared to all trees planted that year? 
+
+I'm not super clear on this one still. I think I'd need to do some more graphing and run more tests - part of the problem with the graphs I used is that there's a HUGE difference between the overall number of trees and the number of Japanese maples which makes visual analysis hard. 
+
+4. What exactly is the relationship between height and diameter of a japanese maple? 
+
+I also have more questions here: most of the trees seem to be "short and wide" but theres a surprising amount of "scatter" in the data once you get past the huge cluster. Definitely want to run a linear regression or some other correlation test on this as well. 
+<!----------------------------------------------------------------------------->
+
+### Attribution
+
+Thanks to Icíar Fernández Boyano for mostly putting this together, and Vincenzo Coia for launching.
+
+usethis::create_from_github(
+  "https://github.com/stat545ubc-2022/MollyM_Data_V2.git",
+  destdir = "C:/Users/the_f/Desktop"
+)
+
+
