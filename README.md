@@ -10,4 +10,7 @@ It contains the code for both milestones (as .rmd files), the image files so tha
 
 ### Milestone 2: 
 * Used tools for sharing/uploading data, regression modeling, some additional graphing and tibble making, and using git. 
-* Includes the RMD file milestone_2.rmd, the image folder milestone-2_files/figure-gfm, and the "output" folder which includes a tibble and .rds file. 
+* Includes the RMD file milestone_2.rmd, the image folder milestone-2_files/figure-gfm.
+
+### output
+* Includes a tibble and .rds file. from Milestone 2
